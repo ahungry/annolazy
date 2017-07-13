@@ -7,7 +7,7 @@ Currently working on the PHP implementation.
 The idea is that you can just point the program at your source
 directory and have docblocks auto-generated and formatted according to
 a nice standard/convention, saving the programmer a lot of time in
-manu comment editing.
+manual comment editing.
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**

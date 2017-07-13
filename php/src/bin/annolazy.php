@@ -9,9 +9,12 @@ use Annolazy\Service\Tokenizer;
 use Fake\Service\MyClass;
 
 $generator = new DocGenerator();
-$generator->loadClass(MyClass::class);
+//$generator->loadClass(MyClass::class);
 //echo $generator->getComment(MyClass::class, 'methods', 'foo');
 
 $tokenizer = new Tokenizer($generator);
 $tokenizer->loadFile(__DIR__ . '/../t/fixtures/MyClass.php');
 echo $tokenizer->parse();
+
+//$tokenizer->loadFile(__DIR__ . '/../Annolazy/Service/DocGenerator.php');
+//echo $tokenizer->parse();

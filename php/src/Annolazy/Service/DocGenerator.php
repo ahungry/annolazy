@@ -55,6 +55,7 @@ Method [ <user> public method foo ] {
     {
         $params = [];
 
+        // @todo Remove the docblock from the export to avoid false positives
         if (preg_match('/- Parameters \[(.*?)\] {/', $export, $count)) {
             for ($i = 0; $i < (int) $count[1]; $i++) {
                 // Get the parameter export line.

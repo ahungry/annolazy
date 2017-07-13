@@ -32,10 +32,15 @@ class MyClass
      * @param
      * @return
      */
-    public function __construct(int $argOne, int $argTwo, string $argThree)
+    public function foo(Tokenizer $argOne, $argTwo, string $argThree = ''): string
     {
         if (1 == 2) {
             throw new \Exception();
         }
+    }
+
+    public function blub(string $stringArg, int $intArg)
+    {
+        return [$stringArg, $intArg];
     }
 }

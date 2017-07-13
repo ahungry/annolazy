@@ -14,6 +14,8 @@ manual comment editing.
 
 - [Annolazy](#annolazy)
     - [A lazy way to generate annotations in many languages](#a-lazy-way-to-generate-annotations-in-many-languages)
+- [Examples](#examples)
+    - [PHP](#php)
 - [Setup](#setup)
 - [TODO](#todo)
     - [PHP](#php)

@@ -97,6 +97,64 @@ Method [ <user> public method foo ] {
         return compact('params', 'returns');
     }
 
+    public function generateMethodComment(array $methodData): string
+    {
+        $shortDesc = 'Short description here @todo';
+        $longDesc = 'Long description here @todo';
+
+        $comment =<<<EOT
+/**
+     * {$shortDesc}
+     *
+     * {$longDesc}
+EOT;
+
+        // First, work out the alignments
+        $wType = 0;
+        $wName = 0;
+
+        foreach ($methodData['params'] as $param) {
+            // @todo Allow full or truncating types based on options
+            $type = explode('\\', $param['type']);
+            $type = array_pop($type);
+
+            if (($len = strlen($type)) > $wType) {
+                $wType = $len;
+            }
+
+            if (($len = strlen($param['name'])) > $wName) {
+                $wName = $len;
+            }
+        }
+
+        // Add a gap space
+        if ($wType > 0 && $wName > 0) {
+            $comment .= PHP_EOL . '     *' . PHP_EOL;
+        }
+
+        foreach ($methodData['params'] as $param) {
+            // @todo Allow full or truncating types based on options
+            $type = explode('\\', $param['type']);
+            $type = array_pop($type);
+
+            $comment .= sprintf(
+                '     * @param %-' . $wType . 's %-' . $wName . 's %s' . PHP_EOL,
+                $type,
+                $param['name'],
+                'Some description here @todo'
+            );
+        }
+
+        $comment .= sprintf(
+            '     *' . PHP_EOL . '     * @returns %s' . PHP_EOL,
+            empty($methodData['returns']) ? 'void' : $methodData['returns']
+        );
+
+        $comment .= '     */' . PHP_EOL;
+
+        return $comment;
+    }
+
     /**
      * Generate documentation for a class.
      *
@@ -106,7 +164,7 @@ Method [ <user> public method foo ] {
      *
      * @return $this
      */
-    public function loadClass(string $className)
+    public function loadClass(string $className): self
     {
         $refClass = new \ReflectionClass($className);
 
@@ -126,13 +184,19 @@ Method [ <user> public method foo ] {
             $export = ob_get_clean();
 
             $inferred = $this->parseMethodExport($export);
-            var_dump ($inferred); die;
+            $comment = $this->generateMethodComment($inferred);
 
-            var_dump ($method->export($className, $method->getName())); die;
+            // @todo Actually mix this with the inferred comment.
+            $userComment = $method->getDocComment();
 
-            $comments[$method->getName()] = $method->getDocComment();
+            $comments[$method->getName()] = $comment;
         }
 
-        var_dump ($comments); die;
+        return $this;
+    }
+
+    public function getComment(string $className, string $type, string $name)
+    {
+        return $this->classData[$className]['comments'][$type][$name];
     }
 }

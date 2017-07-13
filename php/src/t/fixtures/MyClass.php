@@ -12,6 +12,7 @@
  * @license  AGPLv3 https://www.gnu.org/licenses/agpl-3.0.html
  * @link     http://ahungry.com
  */
+namespace Fake\Service;
 
 /**
  * Bla
@@ -34,6 +35,7 @@ class MyClass
      */
     public function foo(Tokenizer $argOne, $argTwo, string $argThree = ''): string
     {
+        // Some inline comment that we hope sticks around...
         if (1 == 2) {
             throw new \Exception();
         }

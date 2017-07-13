@@ -85,8 +85,52 @@ class Tokenizer
         return null;
     }
 
+    public function findTokensUntil(
+        array $tokens,
+        $type,
+        $direction = 1,
+        array $keep = []
+    ) {
+        // Re-index at 0
+        $tokens = array_values($tokens);
+        $collect = [];
+
+        for ($c = 0; $c < count($tokens); $c += $direction) {
+            $token = $tokens[$c];
+
+            if (is_string($token)) {
+                if ($type === $token) {
+                    return $collect;
+                }
+
+                if (empty($keep) || in_array($token, $keep)) {
+                    $collect[] = $token;
+                }
+
+                continue;
+            }
+
+            list($id, $text) = $token;
+
+            if ($id === $type) {
+                return $collect;
+            }
+
+            if (empty($keep) || in_array($id, $keep)) {
+                $collect[] = $text;
+            }
+        }
+
+        return $collect;
+    }
+
     public function parse()
     {
+        $ctx = [
+            'namespace' => null,
+            'class' => null,
+        ];
+
         $out = '';
 
         // Iterate with a C style iteration, as we may need to get
@@ -103,14 +147,46 @@ class Tokenizer
 
                 // https://secure.php.net/manual/en/tokens.php
                 switch ($id) {
-                  case T_COMMENT:
-                  case T_ML_COMMENT: // we've defined this
+                    //case T_COMMENT:
+                    //case T_ML_COMMENT: // we've defined this
                   case T_DOC_COMMENT: // and this
-                      // no action on comments
+                      // If we aren't in a class context, don't drop comments
+                      if (empty($ctx['class'])) {
+                          $out .= $text;
+                      }
+
+                      break;
+
+                  case T_NAMESPACE:
+                      $name = $this->findTokensUntil(
+                          array_slice($this->tokens, $c + 1),
+                          ';',
+                          self::NEXT,
+                          [T_STRING, T_NS_SEPARATOR]
+                      );
+
+                      $ctx['namespace'] = implode('', $name);
+                      $out .= $text;
+
+                      break;
+
+                  case T_CLASS:
+                      $name = $this->findToken(
+                          array_slice($this->tokens, $c + 1),
+                          T_STRING,
+                          self::NEXT
+                      );
+
+                      $ctx['class'] = $name;
+                      $out .= $text;
+
                       break;
 
                       // If we have a function, get a comment for it.
-                  case T_FUNCTION:
+                  case T_PRIVATE:
+                  case T_PUBLIC:
+                  case T_PROTECTED:
+                      //case T_FUNCTION:
                       //$name = next($this->tokens);
                       $name = $this->findToken(
                           array_slice($this->tokens, $c + 1),
@@ -118,19 +194,19 @@ class Tokenizer
                           self::NEXT
                       );
 
-                      var_dump ($id, $text, $name); die;
+                      $class = $ctx['namespace'] . '\\' . $ctx['class'];
+                      $this->generator->loadClass($class);
+                      $comment = $this->generator->getComment($class, 'methods', $name);
+
+                      $out .= $comment;
+                      $out .= '    ' . $text;
+
                       break;
 
                   case T_STRING:
-                      //var_dump ($id, $text);
-                      break;
-
                   default:
-                      break;
-                      //var_dump($id, $text);
-
-                      // anything else -> output "as is"
                       $out .= $text;
+
                       break;
                 }
             }

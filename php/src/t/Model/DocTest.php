@@ -65,4 +65,15 @@ class DocTest extends TestCase
             $c->getShortDesc()
         );
     }
+
+    /**
+     * @depends testConstruct
+     */
+    public function testGetLongDesc($c)
+    {
+        $this->assertEquals(
+            'Long desc goes here.',
+            $c->getLongDesc()
+        );
+    }
 }

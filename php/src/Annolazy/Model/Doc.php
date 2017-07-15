@@ -43,19 +43,77 @@ class Doc
         $this->lines = $lines;
     }
 
-    public function getShortDesc()
+    public function getIndexShortDesc()
     {
         // The short desc is everything up until we hit the first empty line.
-        $desc = [];
+        $start = 0;
+        $end   = 0;
 
-        foreach ($this->lines as $line) {
-            if (0 === strlen(trim($line)) && count($desc) > 0) {
+        for ($i = 0; $i < count($this->lines); $i++) {
+            $line = $this->lines[$i];
+
+            // End position is found when we hit an empty line
+            // after we have found a start position.
+            if (0 === strlen(trim($line)) && $start > 0) {
                 break;
             }
 
-            $desc[] = $line;
+            if (0 < strlen(trim($line)) && $start === 0) {
+                $start = $i;
+            }
+
+            $end = $i;
         }
 
-        return trim(implode(' ', $desc));
+        return [$start, $end];
+    }
+
+    public function getShortDesc()
+    {
+        list($start, $end) = $this->getIndexShortDesc();
+
+        return trim(implode(' ', array_slice($this->lines, $start, 1+$end - $start)));
+    }
+
+    public function getIndexLongDesc()
+    {
+        // First, find the short (we can't have a long desc unless the short
+        // one exists).
+        list($start, $endS) = $this->getIndexShortDesc();
+
+        // The short desc is everything up until we hit the first empty line.
+        $start = 0;
+        $end   = 0;
+
+        for ($i = $endS + 1; $i < count($this->lines); $i++) {
+            $end = $i;
+            $line = $this->lines[$i];
+
+            // End position is found when we hit an empty line
+            // after we have found a start position.
+            if (0 === strlen(trim($line)) && $start > 0) {
+                break;
+            }
+
+            // Or, if we have found a line starting as a tag.
+            if (0 === strpos(trim($line), '@')) {
+                break;
+            }
+
+            if (0 < strlen(trim($line)) && $start === 0) {
+                $start = $i;
+            }
+        }
+        //var_dump ($start, $end); die;
+
+
+        return [$start, $end];
+    }
+
+    public function getLongDesc()
+    {
+        list($start, $end) = $this->getIndexLongDesc();
+
+        return trim(implode(' ', array_slice($this->lines, $start, 1+$end - $start)));
     }
 }

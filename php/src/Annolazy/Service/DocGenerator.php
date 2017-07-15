@@ -146,6 +146,11 @@ EOT;
             );
         }
 
+        // If we had no params, add the blank line.
+        if (!($wType > 0 && $wName > 0)) {
+            $comment .= PHP_EOL;
+        }
+
         $comment .= sprintf(
             '     *' . PHP_EOL . '     * @return %s' . PHP_EOL,
             empty($methodData['return']) ? 'void' : $methodData['return']

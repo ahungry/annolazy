@@ -1,12 +1,22 @@
 all: php
 
-php:
+php/configure:
+	cd php; autoconf
+
+php/Makefile: php/configure
+	cd php; ./configure
+
+php: php/Makefile
 	make -C php
 
 test: test-php
 
 test-php:
 	make -C php test
+
+clean:
+	rm php/configure
+	rm php/Makefile
 
 .PHONY:
 	test-php

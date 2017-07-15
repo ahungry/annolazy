@@ -6,5 +6,8 @@ vendor:
 test: vendor
 	phpunit -c phpunit.xml
 
+clean:
+	rm -fr vendor
+
 .PHONY:
 	test

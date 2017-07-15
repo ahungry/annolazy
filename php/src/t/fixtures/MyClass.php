@@ -26,12 +26,12 @@ namespace Fake\Service;
 class MyClass
 {
     /**
+     * This is a short description, so keep me.
      *
-     *
-     *
-     *
-     * @param
-     * @return
+     * This is a long one, keep me as well.
+     * I really hope you do.
+     * @param SomeType $argTwo This is a description.
+     * @return Foo my return value.
      */
     public function foo(Tokenizer $argOne, $argTwo, string $argThree = ''): string
     {

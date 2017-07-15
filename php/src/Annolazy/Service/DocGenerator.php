@@ -89,13 +89,13 @@ Method [ <user> public method foo ] {
             }
         }
 
-        $returns = null;
+        $return = null;
 
         if (preg_match('/- Return \[ (.*?) \]/', $export, $m)) {
-            $returns = $m[1];
+            $return = $m[1];
         }
 
-        return compact('params', 'returns');
+        return compact('params', 'return');
     }
 
     public function generateMethodComment(array $methodData): string
@@ -147,8 +147,8 @@ EOT;
         }
 
         $comment .= sprintf(
-            '     *' . PHP_EOL . '     * @returns %s' . PHP_EOL,
-            empty($methodData['returns']) ? 'void' : $methodData['returns']
+            '     *' . PHP_EOL . '     * @return %s' . PHP_EOL,
+            empty($methodData['return']) ? 'void' : $methodData['return']
         );
 
         $comment .= '     */' . PHP_EOL;

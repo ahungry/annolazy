@@ -76,4 +76,56 @@ class DocTest extends TestCase
             $c->getLongDesc()
         );
     }
+
+    /**
+     * @depends testConstruct
+     */
+    public function testGetParam($c)
+    {
+        $this->assertEquals(
+            'Type',
+            $c->getParam('name')['type']
+        );
+
+        $this->assertEquals(
+            'Some description',
+            $c->getParam('name')['desc']
+        );
+
+        $this->assertEquals(
+            'TypeTwo',
+            $c->getParam('nameTwo')['type']
+        );
+
+        $this->assertEquals(
+            'Some other description that seems to wrap.',
+            $c->getParam('nameTwo')['desc']
+        );
+
+        $this->assertEquals(
+            'TypeThree',
+            $c->getParam('nameThree')['type']
+        );
+
+        $this->assertEquals(
+            'Some other description that wraps without star.',
+            $c->getParam('nameThree')['desc']
+        );
+    }
+
+    /**
+     * @depends testConstruct
+     */
+    public function testGetReturn($c)
+    {
+        $this->assertEquals(
+            'Foo',
+            $c->getReturn()['type']
+        );
+
+        $this->assertEquals(
+            'My return description',
+            $c->getReturn()['desc']
+        );
+    }
 }

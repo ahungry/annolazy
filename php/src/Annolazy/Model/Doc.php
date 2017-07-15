@@ -84,9 +84,48 @@ class Doc
     {
         // First hit will be short, next will be long.
         list($start, $end) = $this->getIndex();
-
         list($start, $end) = $this->getIndex($start + $end);
 
         return trim(implode(' ', array_slice($this->lines, $start, $end)));
+    }
+
+    public function getParam(string $name)
+    {
+        $param = null;
+
+        $find = preg_match(
+            '/@param\s+(\S*?)\s+\$' . $name . '\s+(.*?)(\x00@|$)/',
+            implode(chr(0), $this->lines),
+            $m
+        );
+
+        if ($find) {
+            $param = [
+                'type' => trim($m[1]),
+                'desc' => trim(preg_replace('/\x00/', ' ', $m[2])),
+            ];
+        }
+
+        return $param;
+    }
+
+    public function getReturn()
+    {
+        $param = null;
+
+        $find = preg_match(
+            '/@return\s+(\S*?)\s+(.*?)(\x00@|$)/',
+            implode(chr(0), $this->lines),
+            $m
+        );
+
+        if ($find) {
+            $param = [
+                'type' => trim($m[1]),
+                'desc' => trim(preg_replace('/\x00/', ' ', $m[2])),
+            ];
+        }
+
+        return $param;
     }
 }

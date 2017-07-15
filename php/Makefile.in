@@ -1,0 +1,7 @@
+all: vendor
+
+vendor:
+	composer dump-autoload
+
+test: vendor
+	phpunit -c phpunit.xml

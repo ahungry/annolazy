@@ -1,0 +1,17 @@
+{
+  "name": "ahungry/annolazy",
+  "description": "Easily generate and format docblocks.",
+  "license": "AGPLv3",
+  "authors": [
+    {
+      "name": "Matthew Carter",
+      "email": "m@ahungry.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    }
+  }
+}

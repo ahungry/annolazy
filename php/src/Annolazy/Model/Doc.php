@@ -29,10 +29,33 @@ namespace Annolazy\Model;
  */
 class Doc
 {
-    private $comment;
+    private $lines;
 
     public function __construct(string $comment)
     {
-        $this->comment = $comment;
+        // Clean out doc stuff we don't need.
+        $lines = explode("\n", $comment);
+
+        foreach ($lines as &$line) {
+            $line = preg_replace('/^[\/\*\s]*/', '', $line);
+        }
+
+        $this->lines = $lines;
+    }
+
+    public function getShortDesc()
+    {
+        // The short desc is everything up until we hit the first empty line.
+        $desc = [];
+
+        foreach ($this->lines as $line) {
+            if (0 === strlen(trim($line)) && count($desc) > 0) {
+                break;
+            }
+
+            $desc[] = $line;
+        }
+
+        return trim(implode(' ', $desc));
     }
 }

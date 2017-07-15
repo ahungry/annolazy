@@ -33,9 +33,19 @@ use PHPUnit\Framework\TestCase;
  */
 class DocTest extends TestCase
 {
+    /**
+     * @todo add doc
+     */
+    public function getStub($name)
+    {
+        return file_get_contents(
+            __DIR__ . '/../fixtures/stub/doc/' . $name . '.txt'
+        );
+    }
+
     public function testConstruct()
     {
-        $construct = new Doc();
+        $construct = new Doc($this->getStub('full'));
 
         $this->assertInstanceOf(
             Doc::class,
@@ -43,5 +53,16 @@ class DocTest extends TestCase
         );
 
         return $construct;
+    }
+
+    /**
+     * @depends testConstruct
+     */
+    public function testGetShortDesc($c)
+    {
+        $this->assertEquals(
+            'Short desc goes here.',
+            $c->getShortDesc()
+        );
     }
 }

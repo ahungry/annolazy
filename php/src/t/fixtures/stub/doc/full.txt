@@ -1,0 +1,15 @@
+/**
+ * Short desc goes
+ * here.
+ *
+ * Long desc goes
+ * here.
+ *
+ * @param Type $name Some description
+ * @param TypeTwo $nameTwo Some other description
+ *         that seems to wrap.
+ * @param TypeThree $nameThree Some other description
+                         that wraps without star.
+ *
+ * @return Foo My return description
+ */

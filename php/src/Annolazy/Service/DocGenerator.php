@@ -184,6 +184,15 @@ EOT;
 
         // Build and save the comments for a class.
         foreach ($refClass->getMethods() as $method) {
+            // @todo Actually mix this with the inferred comment.
+            $userComment = $method->getDocComment();
+
+            if (!empty($userComment)) {
+                $comments[$method->getName()] = $userComment;
+
+                continue;
+            }
+
             // This method just echos output, wtf.
             ob_start();
             \ReflectionMethod::export($className, $method->getName());
@@ -191,9 +200,6 @@ EOT;
 
             $inferred = $this->parseMethodExport($export);
             $comment = $this->generateMethodComment($inferred);
-
-            // @todo Actually mix this with the inferred comment.
-            $userComment = $method->getDocComment();
 
             $comments[$method->getName()] = $comment;
         }

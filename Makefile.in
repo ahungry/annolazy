@@ -1,0 +1,12 @@
+all: php
+
+php:
+	make -C php
+
+test: test-php
+
+test-php:
+	make -C php test
+
+.PHONY:
+	test-php

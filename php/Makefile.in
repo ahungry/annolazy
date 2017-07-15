@@ -5,3 +5,6 @@ vendor:
 
 test: vendor
 	phpunit -c phpunit.xml
+
+.PHONY:
+	test

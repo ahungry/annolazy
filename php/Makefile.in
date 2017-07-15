@@ -7,7 +7,7 @@ test: vendor
 	phpunit -c phpunit.xml
 
 clean:
-	rm -fr vendor
+	-rm -fr vendor
 
 .PHONY:
 	test

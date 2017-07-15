@@ -14,9 +14,12 @@ test: test-php
 test-php:
 	make -C php test
 
-clean:
-	rm php/configure
-	rm php/Makefile
+clean: clean-php
+
+clean-php:
+	-make -C php clean
+	-rm php/Makefile
+	-rm php/configure
 
 .PHONY:
 	test-php

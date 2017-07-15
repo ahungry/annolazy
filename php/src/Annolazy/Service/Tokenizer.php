@@ -186,6 +186,12 @@ class Tokenizer
                   case T_PRIVATE:
                   case T_PUBLIC:
                   case T_PROTECTED:
+                      if (T_FUNCTION !== $this->tokens[$c + 2][0]) {
+                          $out .= $text;
+
+                          break;
+                      }
+
                       //case T_FUNCTION:
                       //$name = next($this->tokens);
                       $name = $this->findToken(

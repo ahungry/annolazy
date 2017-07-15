@@ -188,7 +188,7 @@ EOT;
             $userComment = $method->getDocComment();
 
             if (!empty($userComment)) {
-                $comments[$method->getName()] = $userComment;
+                $comments[$method->getName()] = $userComment . PHP_EOL;
 
                 continue;
             }

@@ -25,6 +25,8 @@ namespace Fake\Service;
  */
 class MyClass
 {
+    private $fake;
+
     /**
      * This is a short description, so keep me.
      *

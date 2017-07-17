@@ -128,4 +128,16 @@ class DocTest extends TestCase
             $c->getReturn()['desc']
         );
     }
+
+    /**
+     * @depends testConstruct
+     */
+    public function testGetUserTags($c)
+    {
+        $tags = $c->getUserTags();
+        $this->assertContains(
+            'todo Another todo goes here',
+            $tags
+        );
+    }
 }

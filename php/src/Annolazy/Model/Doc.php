@@ -128,4 +128,35 @@ class Doc
 
         return $param;
     }
+
+    public function getUserTags()
+    {
+        $tags = explode('@', implode("\n", $this->lines));
+        $tags = array_map('trim', $tags);
+
+        if (empty($tags)) {
+            return [];
+        }
+
+        // First tag may or may not be a short/long desc, so we can try to see
+        // if it matches, and remove if so.
+        $short = preg_replace('/\s/', '', $this->getShortDesc());
+        $tagShort = preg_replace('/\s/', '', $tags[0]);
+
+        if (0 === strpos($tagShort, $short)) {
+            array_shift($tags);
+        }
+
+        // Also, we don't need any param annotations, we get automatically
+        // later.
+        $tags = array_filter(
+            $tags,
+            function ($tag) {
+                return 0 !== strpos($tag, 'param ')
+                    && 0 !== strpos($tag, 'return ');
+            }
+        );
+
+        return $tags;
+    }
 }

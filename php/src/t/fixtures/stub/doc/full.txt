@@ -12,4 +12,14 @@
                          that wraps without star.
  *
  * @return Foo My return description
+ *
+ *
+ * @todo I think we should include this
+ * and this line break.
+ *
+ * @todo Another todo goes here
+ *
+ * @Route(name="_some_route", url = "/some/{thing}")
+ *
+ * @Annot\SomeAnnotation
  */

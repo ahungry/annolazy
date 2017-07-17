@@ -128,11 +128,13 @@ class MyClass
 
 # Setup
 
-Don't use this yet, very much WIP.  But stay tuned!
+Somewhat usable, as long as you're using against a VCS repository so
+you can audit what it changes!
 
 # TODO
 ## PHP
-- Combine existing user docs with inferred docs.
+- User customizations for width/space etc.
+- Wordwrap
 - Un-hardcode 4 space indentation for class files (have Tokenizer
   figure out spacing)
 - Allow more user customizations for short/long/param PHer descs

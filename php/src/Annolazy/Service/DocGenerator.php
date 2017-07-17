@@ -161,6 +161,11 @@ EOT;
             $comment .= PHP_EOL;
         }
 
+        // Now, spew out the tags we didn't have in params or return.
+        foreach ($doc->getUserTags() as $userTag) {
+            $comment .= PHP_EOL . '    * @' . $userTag;
+        }
+
         $docReturn = $doc->getReturn() ?? ['type' => 'void', 'desc' => ''];
 
         $comment .= sprintf(

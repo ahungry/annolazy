@@ -31,6 +31,15 @@ class Doc
 {
     private $lines;
 
+    /**
+     * Create a Doc, given some user docblock.
+     *
+     * The lines are used throughout further method calls.
+     *
+     * @param string $comment The user docblock.
+     *
+     * @return void
+     */
     public function __construct(string $comment)
     {
         // Clean out doc stuff we don't need.
@@ -43,7 +52,17 @@ class Doc
         $this->lines = $lines;
     }
 
-    public function getIndex(int $init = 0)
+    /**
+     * Seek the start/end positions of line elements.
+     *
+     * When setting the short/long descriptions, we need to find this index,
+     * so we know where one ends and the other resumes.
+     *
+     * @param integer $init Initial position to start seeking across lines.
+     *
+     * @return array An array, of [start, end] positions.
+     */
+    public function getIndex(int $init = 0): array
     {
         // The short desc is everything up until we hit the first empty line.
         $start  = $init;
@@ -73,14 +92,24 @@ class Doc
         return [$start, $length - 1];
     }
 
-    public function getShortDesc()
+    /**
+     * Query out the short description.
+     *
+     * @return string
+     */
+    public function getShortDesc(): string
     {
         list($start, $end) = $this->getIndex();
 
         return trim(implode(' ', array_slice($this->lines, $start, $end)));
     }
 
-    public function getLongDesc()
+    /**
+     * Query out the long description.
+     *
+     * @return string
+     */
+    public function getLongDesc(): string
     {
         // First hit will be short, next will be long.
         list($start, $end) = $this->getIndex();
@@ -89,9 +118,16 @@ class Doc
         return trim(implode(' ', array_slice($this->lines, $start, $end)));
     }
 
-    public function getParam(string $name)
+    /**
+     * Query out a specific param.
+     *
+     * @param string $name The param name to query.
+     *
+     * @return array
+     */
+    public function getParam(string $name): array
     {
-        $param = null;
+        $param = ['type' => null, 'desc' => null];
 
         $find = preg_match(
             '/@param\s+(\S*?)\s+\$' . $name . '\s+(.*?)(\x00@|$)/',
@@ -109,9 +145,14 @@ class Doc
         return $param;
     }
 
-    public function getReturn()
+    /**
+     * Query out the return tag.
+     *
+     * @return array
+     */
+    public function getReturn(): array
     {
-        $param = null;
+        $param = ['type' => null, 'desc' => null];
 
         $find = preg_match(
             '/@return\s+(\S*?)\s+(.*?)(\x00@|$)/',
@@ -129,7 +170,12 @@ class Doc
         return $param;
     }
 
-    public function getUserTags()
+    /**
+     * For tags that are not param/return, build them out separately.
+     *
+     * @return array
+     */
+    public function getUserTags(): array
     {
         $tags = explode('@', implode("\n", $this->lines));
         $tags = array_map('trim', $tags);

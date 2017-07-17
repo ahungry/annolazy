@@ -52,17 +52,44 @@ class Tokenizer
     private $tokens;
     private $generator;
 
+    /**
+     * The constructor, duh!
+     *
+     * @param DocGenerator $generator Used to query out/setup user comments.
+     *
+     * @return void
+     */
     public function __construct(DocGenerator $generator)
     {
         $this->generator = $generator;
     }
 
-    public function loadFile($fileName)
+    /**
+     * Loads up a file for parsing.
+     *
+     * @param string $fileName The file to load.
+     *
+     * @return self
+     */
+    public function loadFile(string $fileName): self
     {
         $this->source = file_get_contents($fileName);
         $this->tokens = token_get_all($this->source);
+
+        return $this;
     }
 
+    /**
+     * Seek to the next occurrence of a token.
+     *
+     * This is used for look ahead/behind with token parsing.
+     *
+     * @param array   $tokens    The existing tokens array to parse.
+     * @param integer $type      Which token type (see T_* constants).
+     * @param mixed   $direction Positive number to go forward, negative to go back.
+     *
+     * @return mixed
+     */
     public function findToken(array $tokens, int $type, $direction = 1)
     {
         // Re-index at 0
@@ -85,12 +112,22 @@ class Tokenizer
         return null;
     }
 
+    /**
+     * Keep finding tokens until a specific token is hit.
+     *
+     * @param array $tokens    The existing tokens array to parse.
+     * @param mixed $type      Which token type (see T_* constants).
+     * @param mixed $direction Positive number to go forward, negative to go back.
+     * @param array $keep      Which token types to keep.  Default: [] (all).
+     *
+     * @return array The collection of found tokens.
+     */
     public function findTokensUntil(
         array $tokens,
         $type,
         $direction = 1,
         array $keep = []
-    ) {
+    ): array {
         // Re-index at 0
         $tokens = array_values($tokens);
         $collect = [];
@@ -124,7 +161,14 @@ class Tokenizer
         return $collect;
     }
 
-    public function parse()
+    /**
+     * Handles parsing the tokens in a PHP source code file.
+     *
+     * Probably pretty error prone, use at your own risk!
+     *
+     * @return string
+     */
+    public function parse(): string
     {
         $ctx = [
             'namespace' => null,

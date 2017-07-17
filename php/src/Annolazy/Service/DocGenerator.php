@@ -100,6 +100,17 @@ Method [ <user> public method foo ] {
         return compact('params', 'return');
     }
 
+    /**
+     * Given inferred method data, and existing data, make a comment.
+     *
+     * This is error prone atm, as it has only been tested under best
+     * conditions.  Use at your own risk!
+     *
+     * @param array  $methodData  The inferred data.
+     * @param string $userComment The user existing comment.
+     *
+     * @return string
+     */
     public function generateMethodComment(
         array $methodData,
         string $userComment
@@ -193,9 +204,9 @@ EOT;
      *
      * It will be fun.
      *
-     * @param string $className The class to generate for.
+     * @param string $className This is the class name to parse.
      *
-     * @return $this
+     * @return self
      */
     public function loadClass(string $className): self
     {
@@ -236,6 +247,17 @@ EOT;
         return $this;
     }
 
+    /**
+     * Get a comment for a class.
+     *
+     * Basically, a public accessor for the Tokenizer.
+     *
+     * @param string $className The fully namespaced class name.
+     * @param string $type      The type of comment, such as 'method'.
+     * @param string $name      The name of the method (or comment).
+     *
+     * @return void
+     */
     public function getComment(string $className, string $type, string $name)
     {
         return $this->classData[$className]['comments'][$type][$name];

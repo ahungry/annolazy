@@ -158,7 +158,7 @@ EOT;
 
         foreach ($methodData['params'] as $param) {
             // Query up the parameter we are currently working on.
-            $docParam = $doc->getParam($wName);
+            $docParam = $doc->getParam(substr($param['name'], 1));
 
             // @todo Allow full or truncating types based on options
             $type = explode('\\', $param['type']);

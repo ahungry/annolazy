@@ -34,6 +34,7 @@ class MyClass
      * I really hope you do.
      * @param SomeType $argTwo This is a description.
      * @return Foo my return value.
+     * @todo Make this better
      */
     public function foo(Tokenizer $argOne, $argTwo, string $argThree = ''): string
     {
@@ -43,6 +44,11 @@ class MyClass
         }
     }
 
+    /**
+     * @Route(name="_some_symfony_type_thing", url="/one/{two}")
+     * @todo I don't like using easy to read routes!
+     * @Annot\Some\Custom\Thing Blabla
+     */
     public function blub(string $stringArg, int $intArg)
     {
         return [$stringArg, $intArg];

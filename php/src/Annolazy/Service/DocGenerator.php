@@ -108,11 +108,11 @@ Method [ <user> public method foo ] {
         $doc = new Doc($userComment);
 
         $shortDesc = empty($doc->getShortDesc())
-            ? 'Short description here @todo'
+            ? 'Short description here TODO'
             : $doc->getShortDesc();
 
         $longDesc  = empty($doc->getLongDesc())
-            ? 'Long description here @todo'
+            ? 'Long description here TODO'
             : $doc->getLongDesc();
 
         $comment =<<<EOT
@@ -157,7 +157,7 @@ EOT;
                 '     * @param %-' . $wType . 's %-' . $wName . 's %s' . PHP_EOL,
                 $type,
                 $param['name'],
-                $docParam['desc'] ?? 'Some description here @todo'
+                $docParam['desc'] ?? 'Some description here TODO'
             );
         }
 
@@ -168,7 +168,10 @@ EOT;
 
         // Now, spew out the tags we didn't have in params or return.
         foreach ($doc->getUserTags() as $userTag) {
-            $comment .= PHP_EOL . '    * @' . $userTag;
+            if (trim($userTag)) {
+                $comment .=  '     *' . PHP_EOL;
+                $comment .=  '     * @' . $userTag . PHP_EOL;
+            }
         }
 
         $docReturn = $doc->getReturn() ?? ['type' => 'void', 'desc' => ''];

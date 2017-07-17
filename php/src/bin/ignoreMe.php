@@ -1,8 +1,9 @@
 <?php
 
 require __DIR__ . '/../t/fixtures/MyClass.php';
-require_once __DIR__ . '/../Annolazy/Service/DocGenerator.php';
-require_once __DIR__ . '/../Annolazy/Service/Tokenizer.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+//require_once __DIR__ . '/../Annolazy/Service/DocGenerator.php';
+//require_once __DIR__ . '/../Annolazy/Service/Tokenizer.php';
 
 use Annolazy\Service\DocGenerator;
 use Annolazy\Service\Tokenizer;

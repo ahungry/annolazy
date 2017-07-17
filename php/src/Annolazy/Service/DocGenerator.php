@@ -107,8 +107,13 @@ Method [ <user> public method foo ] {
         // Load up the comment in an easier to use document object.
         $doc = new Doc($userComment);
 
-        $shortDesc = $doc->getShortDesc() ?? 'Short description here @todo';
-        $longDesc  = $doc->getLongDesc()  ?? 'Long description here @todo';
+        $shortDesc = empty($doc->getShortDesc())
+            ? 'Short description here @todo'
+            : $doc->getShortDesc();
+
+        $longDesc  = empty($doc->getLongDesc())
+            ? 'Long description here @todo'
+            : $doc->getLongDesc();
 
         $comment =<<<EOT
 /**

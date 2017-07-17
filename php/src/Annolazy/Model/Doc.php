@@ -143,8 +143,10 @@ class Doc
         $short = preg_replace('/\s/', '', $this->getShortDesc());
         $tagShort = preg_replace('/\s/', '', $tags[0]);
 
-        if (0 === strpos($tagShort, $short)) {
-            array_shift($tags);
+        if ($short) {
+            if (0 === strpos($tagShort, $short)) {
+                array_shift($tags);
+            }
         }
 
         // Also, we don't need any param annotations, we get automatically

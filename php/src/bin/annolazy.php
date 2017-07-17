@@ -7,8 +7,9 @@ if (empty($argv[1]) || !file_exists($argv[1])) {
 
 //require __DIR__ . '/../t/fixtures/MyClass.php';
 require_once $argv[1];
-require_once __DIR__ . '/../Annolazy/Service/DocGenerator.php';
-require_once __DIR__ . '/../Annolazy/Service/Tokenizer.php';
+//require_once __DIR__ . '/../Annolazy/Service/DocGenerator.php';
+//require_once __DIR__ . '/../Annolazy/Service/Tokenizer.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Annolazy\Service\DocGenerator;
 use Annolazy\Service\Tokenizer;

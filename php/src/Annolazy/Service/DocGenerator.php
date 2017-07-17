@@ -14,6 +14,8 @@
  */
 namespace Annolazy\Service;
 
+use Annolazy\Model\Doc;
+
 /**
  * Auto-generate documentation for a user.
  *
@@ -98,10 +100,15 @@ Method [ <user> public method foo ] {
         return compact('params', 'return');
     }
 
-    public function generateMethodComment(array $methodData): string
-    {
-        $shortDesc = 'Short description here @todo';
-        $longDesc = 'Long description here @todo';
+    public function generateMethodComment(
+        array $methodData,
+        string $userComment
+    ): string {
+        // Load up the comment in an easier to use document object.
+        $doc = new Doc($userComment);
+
+        $shortDesc = $doc->getShortDesc() ?? 'Short description here @todo';
+        $longDesc  = $doc->getLongDesc()  ?? 'Long description here @todo';
 
         $comment =<<<EOT
 /**
@@ -134,6 +141,9 @@ EOT;
         }
 
         foreach ($methodData['params'] as $param) {
+            // Query up the parameter we are currently working on.
+            $docParam = $doc->getParam($wName);
+
             // @todo Allow full or truncating types based on options
             $type = explode('\\', $param['type']);
             $type = array_pop($type);
@@ -142,7 +152,7 @@ EOT;
                 '     * @param %-' . $wType . 's %-' . $wName . 's %s' . PHP_EOL,
                 $type,
                 $param['name'],
-                'Some description here @todo'
+                $docParam['desc'] ?? 'Some description here @todo'
             );
         }
 
@@ -151,9 +161,13 @@ EOT;
             $comment .= PHP_EOL;
         }
 
+        $docReturn = $doc->getReturn() ?? ['type' => 'void', 'desc' => ''];
+
         $comment .= sprintf(
-            '     *' . PHP_EOL . '     * @return %s' . PHP_EOL,
-            empty($methodData['return']) ? 'void' : $methodData['return']
+            '     *' . PHP_EOL . '     * @return %s %s' . PHP_EOL,
+            empty($methodData['return'])
+            ? $docReturn['type'] : $methodData['return'],
+            $docReturn['desc']
         );
 
         $comment .= '     */' . PHP_EOL;
@@ -187,11 +201,13 @@ EOT;
             // @todo Actually mix this with the inferred comment.
             $userComment = $method->getDocComment();
 
+            /*
             if (!empty($userComment)) {
                 $comments[$method->getName()] = $userComment . PHP_EOL;
 
                 continue;
             }
+            */
 
             // This method just echos output, wtf.
             ob_start();
@@ -199,7 +215,7 @@ EOT;
             $export = ob_get_clean();
 
             $inferred = $this->parseMethodExport($export);
-            $comment = $this->generateMethodComment($inferred);
+            $comment = $this->generateMethodComment($inferred, $userComment);
 
             $comments[$method->getName()] = $comment;
         }

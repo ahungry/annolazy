@@ -219,6 +219,8 @@ class Tokenizer
 
                       break;
 
+                  case T_INTERFACE:
+                  case T_TRAIT:
                   case T_CLASS:
                       $name = $this->findToken(
                           array_slice($this->tokens, $c + 1),
@@ -243,7 +245,6 @@ class Tokenizer
                   case T_PROTECTED:
                   case T_ABSTRACT:
                   case T_STATIC:
-                  case T_INTERFACE:
                       $buf .= $text;
 
                       break;

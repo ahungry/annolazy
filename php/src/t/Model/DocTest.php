@@ -45,7 +45,7 @@ class DocTest extends TestCase
 
     public function testConstruct()
     {
-        $construct = new Doc($this->getStub('full'));
+        $construct = new \stdClass($this->getStub('full'));
 
         $this->assertInstanceOf(
             Doc::class,

@@ -84,6 +84,7 @@ you can audit what it changes!
 
 # TODO
 ## PHP
+- Handle abstract/static keywords on functions
 - User customizations for width/space etc.
 - Wordwrap
 - Un-hardcode 4 space indentation for class files (have Tokenizer

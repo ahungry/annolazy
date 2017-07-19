@@ -25,6 +25,8 @@ namespace Fake\Service;
  */
 class MyClass
 {
+    private $noAnnot;
+
     /**
      * Some small desc
      *

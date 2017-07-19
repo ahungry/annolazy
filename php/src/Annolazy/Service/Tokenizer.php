@@ -176,6 +176,7 @@ class Tokenizer
         ];
 
         $out = '';
+        $buf = '';
 
         // Iterate with a C style iteration, as we may need to get
         // access to previous/next elements.
@@ -184,7 +185,11 @@ class Tokenizer
 
             if (is_string($token)) {
                 // simple 1-character token
-                $out .= $token;
+                if (empty($buf)) {
+                    $out .= $token;
+                } else {
+                    $buf .= $token;
+                }
             } else {
                 // token array
                 list($id, $text) = $token;
@@ -222,22 +227,28 @@ class Tokenizer
                       );
 
                       $ctx['class'] = $name;
+                      $out .= $buf;
                       $out .= $text;
+
+                      // clear the keyword buffer
+                      $buf = '';
 
                       break;
 
-                      // If we have a function, get a comment for it.
+                      // If we've started a type of function, just save the
+                      // output buffer to spit out data when we hit the name,
+                      // after the function keyword.
                   case T_PRIVATE:
                   case T_PUBLIC:
                   case T_PROTECTED:
-                      if (T_FUNCTION !== $this->tokens[$c + 2][0]) {
-                          $out .= $text;
+                  case T_ABSTRACT:
+                  case T_STATIC:
+                  case T_INTERFACE:
+                      $buf .= $text;
 
-                          break;
-                      }
+                      break;
 
-                      //case T_FUNCTION:
-                      //$name = next($this->tokens);
+                  case T_FUNCTION:
                       $name = $this->findToken(
                           array_slice($this->tokens, $c + 1),
                           T_STRING,
@@ -246,21 +257,53 @@ class Tokenizer
 
                       $class = $ctx['namespace'] . '\\' . $ctx['class'];
                       $this->generator->loadClass($class);
-                      $comment = $this->generator->getComment($class, 'methods', $name);
+                      $comment = $this->generator->getComment(
+                          $class,
+                          'methods',
+                          $name
+                      );
 
-                      $out .= $comment;
-                      $out .= '    ' . $text;
+                      $out .= $comment;      // comment
+                      $out .= '    ' . $buf; // method signature
+                      $out .= $text;         // actual method name
+
+                      // Clear the buffer
+                      $buf = '';
+
+                      break;
+
+                  case T_VARIABLE:
+                      // if we were working on the buf, clear it
+                      // so that we avoid annotating class level annotations.
+                      $out .= $buf;
+                      $out .= $text;
+                      $buf = '';
 
                       break;
 
                   case T_STRING:
                   default:
-                      $out .= $text;
+                      if (empty($buf)) {
+                          $out .= $text;
+                      } else {
+                          $buf .= $text;
+                      }
 
                       break;
                 }
             }
         }
+
+        // Clean out all trailing space, and double newlines.
+        $lines = explode("\n", $out);
+        $lines = array_map('rtrim', $lines);
+        $lines = implode("\n", $lines);
+
+        // Clean out any double newlines.  If we did this during the token
+        // iteration, it would probably be some speed gain.
+        $out = preg_replace("/\n{3,}/sim", "\n\n", $lines);
+        $out = preg_replace("/^{\n{2,}/sim", "{\n", $out);
+        $out = preg_replace("/\n{2,}}$/sim", "\n}", $out);
 
         return $out;
     }

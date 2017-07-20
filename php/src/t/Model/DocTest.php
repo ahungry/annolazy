@@ -140,4 +140,24 @@ class DocTest extends TestCase
             $tags
         );
     }
+
+    public function testBadParams()
+    {
+        $c = new Doc($this->getStub('badParams'));
+        $p = $c->getParam('fakeName');
+        $this->assertEquals('mixed', $p['type']);
+        $this->assertEquals('This is junk', $p['desc']);
+
+        $r = $c->getReturn();
+        $this->assertEquals('Some', $r['type']);
+        $this->assertEquals('value I send back', $r['desc']);
+    }
+
+    public function testBlankReturn()
+    {
+        $c = new Doc($this->getStub('blankReturn'));
+        $r = $c->getReturn();
+        $this->assertEquals('mixed', $r['type']);
+        $this->assertEquals('', $r['desc']);
+    }
 }

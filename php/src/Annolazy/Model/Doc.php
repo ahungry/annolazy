@@ -142,6 +142,21 @@ class Doc
             ];
         }
 
+        // We didn't find a proper param annotation with format going in
+        // param:type:name:desc format
+        if (!$find) {
+            $find = preg_match(
+                '/@param\s+\$' . $name . '\s+(.*?)(\x00@|$)/',
+                implode(chr(0), $this->lines),
+                $m
+            );
+
+            $param = [
+                'type' => 'mixed',
+                'desc' => trim(preg_replace('/\x00/', ' ', $m[1])),
+            ];
+        }
+
         return $param;
     }
 
@@ -164,6 +179,15 @@ class Doc
             $param = [
                 'type' => trim($m[1]),
                 'desc' => trim(preg_replace('/\x00/', ' ', $m[2])),
+            ];
+        }
+
+        // We didn't find a proper param annotation with format going in
+        // return:type:desc format
+        if (!$find) {
+            $param = [
+                'type' => 'mixed',
+                'desc' => null,
             ];
         }
 

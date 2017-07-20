@@ -115,7 +115,14 @@ class Doc
         list($start, $end) = $this->getIndex();
         list($start, $end) = $this->getIndex($start + $end);
 
-        return trim(implode(' ', array_slice($this->lines, $start, $end)));
+        $desc = trim(implode(' ', array_slice($this->lines, $start, $end)));
+
+        // Accidentally grabbed a tag here
+        if (0 === strpos($desc, '@')) {
+            $desc = '';
+        }
+
+        return $desc;
     }
 
     /**
@@ -151,10 +158,12 @@ class Doc
                 $m
             );
 
-            $param = [
-                'type' => 'mixed',
-                'desc' => trim(preg_replace('/\x00/', ' ', $m[1])),
-            ];
+            if ($find) {
+                $param = [
+                    'type' => 'mixed',
+                    'desc' => trim(preg_replace('/\x00/', ' ', $m[1])),
+                ];
+            }
         }
 
         return $param;
@@ -167,7 +176,7 @@ class Doc
      */
     public function getReturn(): array
     {
-        $param = ['type' => null, 'desc' => null];
+        $param = ['type' => 'mixed', 'desc' => null];
 
         $find = preg_match(
             '/@return\s+(\S*?)\s+(.*?)(\x00@|$)/',
@@ -185,10 +194,18 @@ class Doc
         // We didn't find a proper param annotation with format going in
         // return:type:desc format
         if (!$find) {
-            $param = [
-                'type' => 'mixed',
-                'desc' => null,
-            ];
+            $find = preg_match(
+                '/@return\s+(\S*?)(\x00@|$)/',
+                implode(chr(0), $this->lines),
+                $m
+            );
+
+            if ($find) {
+                $param = [
+                    'type' => trim($m[1]),
+                    'desc' => trim(preg_replace('/\x00/', ' ', $m[2])),
+                ];
+            }
         }
 
         return $param;
